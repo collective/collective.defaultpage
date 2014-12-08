@@ -13,27 +13,30 @@ class DefaultPageView(BrowserView):
     """
 
     def __call__(self):
+        if api.user.is_anonymous():
+            return self.show_first_accessible_object()
+
         mtool = getToolByName(self, 'portal_membership')
         roles_in_context = api.user.get_roles(
             username=mtool.getAuthenticatedMember().getUserName(),
             obj=self.context)
-        if ('Reviewer' in roles_in_context) or ('Manager' in roles_in_context):
-            # summary_view = getMultiAdapter(
-            #     (self.context, self.request), name='folder_summary_view')
-            #summary_view = summary_view.__of__(self.context)
-            st_msg = IStatusMessage(self.request)
-            st_msg.add(
-                _(
-                    u"You have extended rights in this context, thats why we"\
-                    u"don't show the default page here, to make your life"\
-                    u"easier."
-                ),
-                type="info"
-            )
+        if ('Reviewer' not in roles_in_context) and ('Manager' not in roles_in_context):
+            return self.show_first_accessible_object()
 
-            summary_view = self.context.restrictedTraverse('folder_summary_view')
-            return summary_view()
+        st_msg = IStatusMessage(self.request)
+        st_msg.add(
+            _(
+                u"You have extended rights in this context, thats why we" \
+                u"don't show the default page here, to make your life" \
+                u"easier."
+            ),
+            type="info"
+        )
+        summary_view = self.context.restrictedTraverse('folder_summary_view')
+        return summary_view()
 
+    def show_first_accessible_object(self):
+        mtool = getToolByName(self, 'portal_membership')
         for obj in self.context.objectValues():
             if not IContentish.providedBy(obj):
                 continue
@@ -41,3 +44,6 @@ class DefaultPageView(BrowserView):
                 continue
 
             return self.request.RESPONSE.redirect(obj.absolute_url())
+        # if no page is accessible, we show the folder_summary_view
+        summary_view = self.context.restrictedTraverse('folder_summary_view')
+        return summary_view()
