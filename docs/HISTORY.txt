@@ -1,10 +1,11 @@
 Changelog
 =========
 
-0.2 (unreleased)
+0.2 (2022-08-04)
 ----------------
 
-- Nothing changed yet.
+- Add Python classifiers
+
 
 
 0.1 (2022-08-04)
