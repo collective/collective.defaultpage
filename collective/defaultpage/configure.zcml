@@ -6,7 +6,6 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="collective.defaultpage">
 
-  <five:registerPackage package="." initialize=".initialize" />
 
   <i18n:registerTranslations directory="locales" />
 
@@ -16,7 +15,23 @@
       directory="profiles/default"
       description="Installs the collective.defaultpage package"
       provides="Products.GenericSetup.interfaces.EXTENSION"
+      post_handler=".setuphandlers.post_install"
       />
+
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="collective.defaultpage (uninstall)"
+      directory="profiles/uninstall"
+      description="Uninstalls the collective.defaultpage add-on."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      post_handler=".setuphandlers.uninstall"
+      />
+
+  <utility
+      factory=".setuphandlers.HiddenProfiles"
+      name="collective.defaultpage-hiddenprofiles"
+      />
+
   <!-- -*- extra stuff goes here -*- -->
 
   <browser:page

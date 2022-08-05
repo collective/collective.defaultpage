@@ -30,3 +30,4 @@ docs/html
 /.tmp/
 .ropeproject
 .idea
+/.python-version
