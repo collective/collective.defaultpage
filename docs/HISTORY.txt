@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.3 (unreleased)
+0.3 (2022-08-06)
 ----------------
 
 - Add enforce login feature.
