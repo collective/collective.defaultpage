@@ -2,13 +2,13 @@
 
 from collective.defaultpage import _
 from plone import schema
+from plone.app.z3cform.widget import SingleCheckBoxBoolFieldWidget
+from plone.autoform import directives
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.supermodel import model
 from Products.CMFPlone.utils import safe_hasattr
 from zope.component import adapter
-from zope.interface import Interface
-from zope.interface import implementer
-from zope.interface import provider
+from zope.interface import Interface, implementer, provider
 
 
 class IDefaultpageSettingsMarker(Interface):
@@ -19,11 +19,24 @@ class IDefaultpageSettingsMarker(Interface):
 class IDefaultpageSettings(model.Schema):
     """
     """
-
-    project = schema.TextLine(
-        title=_(u'Project'),
-        description=_(u'Give in a project name'),
+    model.fieldset(
+        'settings',
+        label=u'Settings',
+        fields=[
+            'enforce_login',
+        ],
+    )
+    directives.widget(enforce_login=SingleCheckBoxBoolFieldWidget)
+    enforce_login = schema.Bool(
+        title=_(
+            u'Enforce login',
+        ),
+        description=_(
+            u'Enforce login before redirecting to first object in defaultpage view.',
+        ),
         required=False,
+        default=False,
+        readonly=False,
     )
 
 
@@ -34,11 +47,11 @@ class DefaultpageSettings(object):
         self.context = context
 
     @property
-    def project(self):
-        if safe_hasattr(self.context, 'project'):
-            return self.context.project
-        return None
+    def enforce_login(self):
+        if safe_hasattr(self.context, 'enforce_login'):
+            return self.context.enforce_login
+        return False
 
-    @project.setter
-    def project(self, value):
-        self.context.project = value
+    @enforce_login.setter
+    def enforce_login(self, value):
+        self.context.enforce_login = value

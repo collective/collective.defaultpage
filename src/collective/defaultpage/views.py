@@ -3,6 +3,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.statusmessages.interfaces import IStatusMessage
 from Products.Five import BrowserView
 from plone import api
+from zope.component import getMultiAdapter
 
 from collective.defaultpage import _
 
@@ -13,6 +14,13 @@ class DefaultPageView(BrowserView):
     """
 
     def __call__(self):
+        enforce_login = getattr(self.context, "enforce_login", False)
+        if api.user.is_anonymous() and enforce_login:
+            pstate = getMultiAdapter((self.context, self.request), name='plone_portal_state')
+            portal_url = pstate.portal_url()
+            url = "{0}/login?came_from={1}".format(portal_url, self.context.absolute_url_path())
+            return self.request.RESPONSE.redirect(url)
+
         if api.user.is_anonymous():
             return self.show_first_accessible_object()
 
