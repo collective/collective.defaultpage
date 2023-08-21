@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.5 (unreleased)
+0.5 (2023-08-21)
 ----------------
 
 - add compatibility with Plone 6
