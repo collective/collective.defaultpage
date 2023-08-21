@@ -4,7 +4,10 @@ Changelog
 0.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- add compatibility with Plone 6
+  [MrTango]
+
+- allow enforcing login
 
 
 0.4 (2022-08-06)

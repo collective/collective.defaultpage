@@ -40,7 +40,9 @@ class DefaultPageView(BrowserView):
             ),
             type="info"
         )
-        summary_view = self.context.restrictedTraverse('folder_summary_view')
+        summary_view = self.context.restrictedTraverse('summary_view', None)
+        if not summary_view:
+            summary_view = self.context.restrictedTraverse('folder_summary_view')
         return summary_view()
 
     def show_first_accessible_object(self):
@@ -53,5 +55,7 @@ class DefaultPageView(BrowserView):
 
             return self.request.RESPONSE.redirect(obj.absolute_url())
         # if no page is accessible, we show the folder_summary_view
-        summary_view = self.context.restrictedTraverse('folder_summary_view')
+        summary_view = self.context.restrictedTraverse('summary_view', None)
+        if not summary_view:
+            summary_view = self.context.restrictedTraverse('folder_summary_view')
         return summary_view()
